@@ -1,4 +1,4 @@
-window.SABLE_SPELL_META = {
+(window.CHARACTER_BUNDLES=window.CHARACTER_BUNDLES||{});(window.CHARACTER_BUNDLES['sable-vey']=window.CHARACTER_BUNDLES['sable-vey']||{id:'sable-vey',storageKeySeed:'sable-vey',storageKey:'sable-vey-sheet-v1'}).spellMeta = {
   'Guidance': {timing:'action', concentration:true, range:'60 ft. (Channeler)', duration:'Conc. 1 min.', components:'V, S'},
   'Minor Illusion': {timing:'action', range:'30 ft. (5-ft cube)', duration:'1 min.', components:'S, M'},
   'Vicious Mockery': {timing:'action', range:'60 ft.', duration:'Instant.', components:'V', save:'Wis Save'},
