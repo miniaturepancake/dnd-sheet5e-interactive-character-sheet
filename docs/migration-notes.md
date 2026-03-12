@@ -58,7 +58,8 @@ The deterministic plain-script boot order is required and file:// safe:
 ## Boot-Time Character Selection
 
 - Query key comes from window.CHARACTER_BOOT_CONFIG.queryParam (currently character).
-- Valid ?character=<id> boots that character.
+- Valid canonical ids boot directly.
+- Legacy aliases can also resolve to canonical ids.
 - Missing/invalid query renders chooser.
 - Chooser behavior and links are unchanged.
 
@@ -83,6 +84,9 @@ The deterministic plain-script boot order is required and file:// safe:
 - src/app/persistence.js now provides:
   - loadState(): read localStorage and normalize against character defaults.
   - saveStateSnapshot(runtimeState): persist a provided snapshot and update lastSavedAt.
+- Canonical storage now uses each registry entry storageKey.
+- Morrow Vale reads canonical storage key morrow-vale-sheet-v1 first, then falls back to legacy placeholder-adept-sheet-v1 and copies the migrated snapshot into the canonical key.
+- Legacy data is not deleted during migration; canonical data simply takes precedence once it exists.
 - Persist writes are triggered by store mutations, not ad hoc helpers in render/events.
 
 ### Selectors / Access Layer
@@ -160,6 +164,26 @@ src/data/characters/index.js runtimeModel now drives:
 - resourceIds alias map
 - spellCastRules for special cast resolution
 - shortRestResourceIds and longRestResourceIds
+- quickResources summary/group config for the live-play surface
+
+## Rename / Alias Handling
+
+- Canonical second-character id is now morrow-vale.
+- placeholder-adept is now a legacy URL alias only; it is no longer a canonical registry entry.
+- The chooser links only to canonical ids, so newly generated links point to ?character=morrow-vale.
+- Legacy alias resolution happens before boot script loading, so placeholder-adept and morrow-vale load the same bundle, runtime model, and canonical storage key.
+
+## Live-Play Surface
+
+- The sticky strip has been replaced by a persistent quick-play bar plus a compact quick-resources surface.
+- The quick-play bar stays visible while switching tabs and shows HP, AC, concentration, reaction, spellcasting summary, and key-resource chips.
+- The quick-resources surface is driven by runtimeModel.quickResources plus existing item/resource metadata.
+- Current generic sections are:
+  - class resources
+  - free casts
+  - item powers
+  - rest resources
+- The structure is intentionally class-agnostic even though current character content is still Bard-specific.
 
 ## Remaining Character-Specific Areas
 
@@ -173,6 +197,7 @@ src/data/characters/index.js runtimeModel now drives:
 
 - index.html -> chooser renders
 - index.html?character=sable-vey -> Sable boots
+- index.html?character=morrow-vale -> Morrow Vale boots
 - index.html?character=placeholder-adept -> Morrow Vale boots
 - index.html?character=does-not-exist -> chooser renders
 

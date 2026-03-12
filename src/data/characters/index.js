@@ -2,22 +2,63 @@ function buildStorageKey(seed){
   return `${seed}-sheet-v1`;
 }
 
+function quickResourceConfig(){
+  return {
+    summaryEntries: [
+      {kind: 'resource-counter', alias: 'bardicInspiration', label: 'Bardic Inspiration', shortLabel: 'Inspiration', max: 5},
+      {kind: 'resource-counter', alias: 'blessing', label: 'Blessing of the Raven Queen', shortLabel: 'Blessing', max: 4},
+      {kind: 'resource-toggle', alias: 'shieldFreeCast', label: 'Shield free cast', shortLabel: 'Shield'},
+      {kind: 'resource-toggle', alias: 'spiritGuardiansFreeCast', label: 'Spirit Guardians free cast', shortLabel: 'Spirit G.'},
+    ],
+    groups: [
+      {
+        id: 'classResources',
+        label: 'Class resources',
+        entries: [
+          {kind: 'resource-counter', alias: 'bardicInspiration', label: 'Bardic Inspiration', max: 5, note: 'Short or Long Rest'},
+          {kind: 'resource-counter', alias: 'blessing', label: 'Blessing of the Raven Queen', max: 4, note: 'Long Rest'},
+          {kind: 'path-counter', path: 'hitDiceRemaining', label: 'Hit Dice', max: 11, note: 'Short Rest spend'},
+        ],
+      },
+      {
+        id: 'freeCasts',
+        label: 'Free casts',
+        entries: [
+          {kind: 'resource-toggle', alias: 'shieldFreeCast', label: 'Shield', note: 'Magic Initiate', onLabel: 'Available', offLabel: 'Used'},
+          {kind: 'resource-toggle', alias: 'spiritGuardiansFreeCast', label: 'Spirit Guardians', note: 'Subclass', onLabel: 'Available', offLabel: 'Used'},
+          {kind: 'resource-toggle', alias: 'spiritGuardiansCover', label: 'Spirit Guardians Half Cover', note: 'Short or Long Rest', onLabel: 'Ready', offLabel: 'Used'},
+        ],
+      },
+    ],
+    includeItemPowers: true,
+  };
+}
+
 window.CHARACTER_BOOT_CONFIG = {
   queryParam: 'character',
 };
 
-window.resolveBootCharacterId = function resolveBootCharacterId(){
-  const knownCharacters=window.CHARACTERS||{};
-  const knownIds=Object.keys(knownCharacters);
-  if(!knownIds.length) return null;
+window.CHARACTER_ID_ALIASES = {
+  'placeholder-adept': 'morrow-vale',
+};
 
+window.resolveCanonicalCharacterId = function resolveCanonicalCharacterId(requestedId){
+  const knownCharacters=window.CHARACTERS||{};
+  const aliases=window.CHARACTER_ID_ALIASES||{};
+  const value=(requestedId||'').trim();
+  if(!value) return null;
+  if(value in knownCharacters) return value;
+  const aliasedId=aliases[value];
+  return aliasedId && aliasedId in knownCharacters ? aliasedId : null;
+};
+
+window.resolveBootCharacterId = function resolveBootCharacterId(){
   const bootConfig=window.CHARACTER_BOOT_CONFIG||{};
   const queryParam=bootConfig.queryParam||'character';
   const searchParams=new URLSearchParams(window.location.search||'');
   const requestedId=(searchParams.get(queryParam)||'').trim();
-
-  if(requestedId && requestedId in knownCharacters) return requestedId;
-  return null;
+  const resolver=window.resolveCanonicalCharacterId;
+  return typeof resolver==='function' ? resolver(requestedId) : null;
 };
 
 window.CHARACTERS = {
@@ -64,18 +105,21 @@ window.CHARACTERS = {
       },
       shortRestResourceIds: ['bardicInspiration', 'spiritGuardiansCover', 'reactionUsed', 'concentration', 'shieldActive'],
       longRestResourceIds: ['bardicInspiration', 'blessing', 'shieldFree', 'spiritGuardiansFree', 'spiritGuardiansCover', 'reactionUsed', 'concentration', 'shieldActive'],
+      quickResources: quickResourceConfig(),
     },
   },
-  'placeholder-adept': {
-    id: 'placeholder-adept',
+  'morrow-vale': {
+    id: 'morrow-vale',
     label: 'Morrow Vale',
-    bundleId: 'placeholder-adept',
-    storageKeySeed: 'placeholder-adept',
-    storageKey: buildStorageKey('placeholder-adept'),
+    bundleId: 'morrow-vale',
+    storageKeySeed: 'morrow-vale',
+    storageKey: buildStorageKey('morrow-vale'),
+    legacyIds: ['placeholder-adept'],
+    legacyStorageKeys: [buildStorageKey('placeholder-adept')],
     scriptPaths: [
-      './src/data/characters/placeholder-adept/character-data.js',
-      './src/data/characters/placeholder-adept/default-state.js',
-      './src/data/characters/placeholder-adept/spell-meta.js',
+      './src/data/characters/morrow-vale/character-data.js',
+      './src/data/characters/morrow-vale/default-state.js',
+      './src/data/characters/morrow-vale/spell-meta.js',
     ],
     runtimeModel: {
       focusItemId: 'viol',
@@ -109,6 +153,7 @@ window.CHARACTERS = {
       },
       shortRestResourceIds: ['bardicInspiration', 'spiritGuardiansCover', 'reactionUsed', 'concentration', 'shieldActive'],
       longRestResourceIds: ['bardicInspiration', 'blessing', 'shieldFree', 'spiritGuardiansFree', 'spiritGuardiansCover', 'reactionUsed', 'concentration', 'shieldActive'],
+      quickResources: quickResourceConfig(),
     },
   },
 };
@@ -134,6 +179,11 @@ window.CHARACTER_REGISTRY_SCAFFOLD = {
       spellCastRules: {},
       shortRestResourceIds: [],
       longRestResourceIds: [],
+      quickResources: {
+        summaryEntries: [],
+        groups: [],
+        includeItemPowers: true,
+      },
     },
   },
 };

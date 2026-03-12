@@ -1,4 +1,4 @@
-(window.CHARACTER_BUNDLES=window.CHARACTER_BUNDLES||{});(window.CHARACTER_BUNDLES['placeholder-adept']=window.CHARACTER_BUNDLES['placeholder-adept']||{id:'placeholder-adept',storageKeySeed:'placeholder-adept',storageKey:'placeholder-adept-sheet-v1'}).spellMeta = {
+(window.CHARACTER_BUNDLES=window.CHARACTER_BUNDLES||{});(window.CHARACTER_BUNDLES['morrow-vale']=window.CHARACTER_BUNDLES['morrow-vale']||{id:'morrow-vale',storageKeySeed:'morrow-vale',storageKey:'morrow-vale-sheet-v1',legacyStorageKeys:['placeholder-adept-sheet-v1']}).spellMeta = {
   'Guidance': {timing:'action', concentration:true, range:'60 ft. (Channeler)', duration:'Conc. 1 min.', components:'V, S'},
   'Minor Illusion': {timing:'action', range:'30 ft. (5-ft cube)', duration:'1 min.', components:'S, M'},
   'Vicious Mockery': {timing:'action', range:'60 ft.', duration:'Instant.', components:'V', save:'Wis Save'},

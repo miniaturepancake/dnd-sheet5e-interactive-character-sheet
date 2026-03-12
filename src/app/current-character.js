@@ -18,6 +18,7 @@ const DATA = CHARACTER_BUNDLE && CHARACTER_BUNDLE.data;
 const DEFAULT_STATE = CHARACTER_BUNDLE && CHARACTER_BUNDLE.defaultState;
 const SPELL_META = CHARACTER_BUNDLE && CHARACTER_BUNDLE.spellMeta;
 const STORAGE_KEY = (CHARACTER_BUNDLE && CHARACTER_BUNDLE.storageKey) || CURRENT_CHARACTER.storageKey;
+const CURRENT_CHARACTER_LEGACY_STORAGE_KEYS = normalizeLegacyStorageKeys(CURRENT_CHARACTER, CHARACTER_BUNDLE);
 
 if(!DATA || !DEFAULT_STATE || !SPELL_META){
   throw new Error(`Character bundle data is missing for ${CURRENT_CHARACTER_ID}.`);
@@ -30,8 +31,23 @@ const CURRENT_CHARACTER_ITEM_RECOVERY_IDS = CURRENT_CHARACTER_RUNTIME_MODEL.item
 const CURRENT_CHARACTER_RESOURCE_IDS = normalizeResourceIds(CURRENT_CHARACTER_RUNTIME_MODEL.resourceIds || {});
 const CURRENT_CHARACTER_SPELL_CAST_RULES = normalizeSpellCastRules(CURRENT_CHARACTER_RUNTIME_MODEL.spellCastRules || {});
 const CURRENT_CHARACTER_ATTUNEMENT_IDS = (DATA.attunement || []).map(item => item.id || item.key).filter(Boolean);
+const CURRENT_CHARACTER_MAGIC_ITEMS_BY_ID = indexMagicItems(DATA.magicItems || []);
+const CURRENT_CHARACTER_FOCUS_ITEM = CURRENT_CHARACTER_FOCUS_ITEM_ID ? (CURRENT_CHARACTER_MAGIC_ITEMS_BY_ID[CURRENT_CHARACTER_FOCUS_ITEM_ID] || null) : null;
+const CURRENT_CHARACTER_FOCUS_ITEM_NAME = CURRENT_CHARACTER_FOCUS_ITEM?.name || 'Focus item';
 const CURRENT_CHARACTER_ITEM_USE_IDS = collectItemUseIds(DATA);
+const CURRENT_CHARACTER_ITEM_USE_LABELS = collectItemUseLabels(DATA);
+const CURRENT_CHARACTER_QUICK_RESOURCES = normalizeQuickResources(CURRENT_CHARACTER_RUNTIME_MODEL.quickResources || {});
 const CHARACTER_DEFAULT_STATE = normalizeState(DEFAULT_STATE);
+
+function normalizeLegacyStorageKeys(character,bundle){
+  const keys=[];
+  const addKey=(value)=>{
+    if(value && !keys.includes(value) && value!==STORAGE_KEY) keys.push(value);
+  };
+  (character.legacyStorageKeys || []).forEach(addKey);
+  (bundle?.legacyStorageKeys || []).forEach(addKey);
+  return keys;
+}
 
 function normalizeResourceIds(resourceIds){
   return {
@@ -68,6 +84,21 @@ function normalizeSpellCastRules(spellCastRules){
   };
 }
 
+function normalizeQuickResources(quickResources){
+  return {
+    summaryEntries: Array.isArray(quickResources.summaryEntries) ? quickResources.summaryEntries : [],
+    groups: Array.isArray(quickResources.groups) ? quickResources.groups : [],
+    includeItemPowers: quickResources.includeItemPowers !== false,
+  };
+}
+
+function indexMagicItems(items){
+  return (items || []).reduce(function(index,item){
+    if(item && item.id) index[item.id]=item;
+    return index;
+  }, {});
+}
+
 function collectItemUseIds(data){
   const ids=[];
   const addId=(value)=>{if(value && !ids.includes(value)) ids.push(value);};
@@ -75,6 +106,17 @@ function collectItemUseIds(data){
   const itemGranted=(data.specialSpells || {})['Item-granted spells'] || {};
   Object.values(itemGranted).flat().forEach(spell=>addId(spell.id));
   return ids;
+}
+
+function collectItemUseLabels(data){
+  const labels={};
+  const addSpell=(spell)=>{
+    if(spell && spell.id && !labels[spell.id]) labels[spell.id]=spell.name || spell.id;
+  };
+  Object.values(data.cantrips || {}).flat().forEach(addSpell);
+  const itemGranted=(data.specialSpells || {})['Item-granted spells'] || {};
+  Object.values(itemGranted).flat().forEach(addSpell);
+  return labels;
 }
 
 function normalizeAttunementState(attunement){

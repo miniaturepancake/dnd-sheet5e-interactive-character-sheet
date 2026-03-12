@@ -1,5 +1,5 @@
 (window.CHARACTER_BUNDLES=window.CHARACTER_BUNDLES||{});
-(window.CHARACTER_BUNDLES['placeholder-adept']=window.CHARACTER_BUNDLES['placeholder-adept']||{id:'placeholder-adept',storageKeySeed:'placeholder-adept',storageKey:'placeholder-adept-sheet-v1'}).data = {
+(window.CHARACTER_BUNDLES['morrow-vale']=window.CHARACTER_BUNDLES['morrow-vale']||{id:'morrow-vale',storageKeySeed:'morrow-vale',storageKey:'morrow-vale-sheet-v1',legacyStorageKeys:['placeholder-adept-sheet-v1']}).data = {
 	"identity": {
 		"name": "Morrow Vale",
 		"species": "Shadar-kai",
