@@ -1,3 +1,3 @@
-function shortRest(){resetRuntimeResourceIds(CURRENT_CHARACTER_SHORT_REST_RESOURCE_IDS);}
-function longRest(){state.hp.current=state.hp.max; state.hp.temp=0; state.hitDiceRemaining=CHARACTER_DEFAULT_STATE.hitDiceRemaining; state.deathSaves.successes=[false,false,false]; state.deathSaves.failures=[false,false,false]; resetRuntimeResourceIds(CURRENT_CHARACTER_LONG_REST_RESOURCE_IDS); state.spellSlots=clone(DATA.spellSlots); refreshRuntimeItemUses(); resetRuntimeItemRecoveries();}
-function resetAll(){state=clone(CHARACTER_DEFAULT_STATE);}
+function shortRest(){updateState(function(nextState){resetRuntimeResourceIds(CURRENT_CHARACTER_SHORT_REST_RESOURCE_IDS,nextState);});}
+function longRest(){updateState(function(nextState){nextState.hp.current=nextState.hp.max; nextState.hp.temp=0; nextState.hitDiceRemaining=CHARACTER_DEFAULT_STATE.hitDiceRemaining; nextState.deathSaves.successes=[false,false,false]; nextState.deathSaves.failures=[false,false,false]; resetRuntimeResourceIds(CURRENT_CHARACTER_LONG_REST_RESOURCE_IDS,nextState); nextState.spellSlots=clone(DATA.spellSlots); refreshRuntimeItemUses(nextState); resetRuntimeItemRecoveries(nextState);});}
+function resetAll(){replaceState(clone(CHARACTER_DEFAULT_STATE));}

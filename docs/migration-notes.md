@@ -5,214 +5,177 @@
 - src/data/characters/sable-vey/character-data.js: Sable static character dataset.
 - src/data/characters/sable-vey/default-state.js: Sable default runtime state shape.
 - src/data/characters/sable-vey/spell-meta.js: Sable static spell metadata.
-- src/data/characters/index.js: authoritative character registry, default character id, storage key seeds, boot selection config, and per-character bundle + runtime metadata.
-- src/app/boot-loader.js: deterministic boot loader that resolves active character id, loads character-specific data scripts, then loads shared app scripts.
+- src/data/characters/index.js: authoritative character registry, default id, query config, and per-character runtime metadata.
+- src/app/boot-loader.js: deterministic plain-script boot sequence and chooser rendering for missing/invalid character query.
 - src/app/utils.js: generic utility helpers.
-- src/app/current-character.js: resolves current character id at boot from query string with fallback, reads selected character bundle, binds DATA/DEFAULT_STATE/SPELL_META/STORAGE_KEY globals from that bundle, and normalizes character-driven runtime state (attunement ids, item-use ids, item-recovery ids).
-- src/app/persistence.js: storage key and normalized state load/save helpers.
-- src/app/state.js: runtime globals and initial state bootstrap.
-- src/app/resource-model.js: runtime resource-definition helpers (resource aliases, spell-slot/item-use/free-cast spend helpers, and reset helpers).
-- src/app/derived.js: computed state helper(s), currently derived().
-- src/app/reset.js: short rest, long rest, and reset-all logic driven by current-character resource id lists.
-- src/app/actions.js: centralized runtime action and cast-resolution layer used by event dispatch.
-- src/app/view-helpers.js: non-tab render/view helper logic used by rendering and events.
-- src/app/render.js: top-level UI render functions and renderApp.
-- src/app/events.js: thin DOM event-to-action dispatch layer.
-- src/app/main.js: final bootstrap wiring (event listeners and initial render call).
+- src/app/current-character.js: resolves active character bundle and normalizes character-shaped runtime state.
+- src/app/persistence.js: load and snapshot persistence helpers.
+- src/app/store.js: central runtime state owner.
+- src/app/state.js: runtime store bootstrap and shared runtime globals.
+- src/app/resource-model.js: character-driven resource alias, spend, and reset primitives.
+- src/app/selectors.js: stable state access/selectors and path helpers used by render/actions.
+- src/app/derived.js: computed combat/spell metrics.
+- src/app/reset.js: short/long/reset-all implementations via store updates.
+- src/app/actions.js: centralized runtime action and mutation layer.
+- src/app/view-helpers.js: spell/filter/helper rendering driven by selectors and actions.
+- src/app/render.js: top-level UI rendering driven by selectors and stable access helpers.
+- src/app/events.js: thin DOM event interpreter and action dispatcher.
+- src/app/main.js: listener wiring and initial render call.
 
 ## Required Script Load Order
 
-The current deterministic bootstrap order is required:
+The deterministic plain-script boot order is required and file:// safe:
 
 1. index.html static scripts:
-	- src/data/characters/index.js
-	- src/app/boot-loader.js
-2. boot-loader dynamic character-specific scripts:
-	- from registry entry `scriptPaths` for the resolved character id
-3. boot-loader dynamic shared app scripts:
-	- src/app/utils.js
-	- src/app/current-character.js
-	- src/app/persistence.js
-	- src/app/state.js
-	- src/app/resource-model.js
-	- src/app/derived.js
-	- src/app/reset.js
-	- src/app/actions.js
-	- src/app/view-helpers.js
-	- src/app/render.js
-	- src/app/events.js
-	- src/app/main.js
+   - src/data/characters/index.js
+   - src/app/boot-loader.js
+2. boot-loader character scripts:
+   - registry entry scriptPaths for resolved character id
+3. boot-loader shared app scripts:
+   - src/app/utils.js
+   - src/app/current-character.js
+   - src/app/persistence.js
+   - src/app/store.js
+   - src/app/state.js
+   - src/app/resource-model.js
+   - src/app/selectors.js
+   - src/app/derived.js
+   - src/app/reset.js
+   - src/app/actions.js
+   - src/app/view-helpers.js
+   - src/app/render.js
+   - src/app/events.js
+   - src/app/main.js
 
 ## Architectural Constraints
 
-- Keep browser-global plain scripts (no ES modules yet).
-- Must work when opening index.html directly with file://.
-- No runtime fetch calls and no runtime network dependency.
-- Keep localStorage persistence behavior unchanged.
-- Keep reset behavior and render output unchanged.
-- Keep the default character mapping on Sable to preserve current behavior.
+- Browser globals only (no ES modules).
+- Works from local file:// opening.
+- No runtime fetch/network dependency.
+- reference/prototype.html remains unchanged.
+- Rendered UI behavior is unchanged in this pass.
 
 ## Boot-Time Character Selection
 
-- Selection is non-UI and starts in src/app/boot-loader.js using resolver logic from src/data/characters/index.js.
-- Query parameter key is registry-configured in src/data/characters/index.js:
-	- window.CHARACTER_BOOT_CONFIG.queryParam (currently `character`)
-- Resolution order at boot:
-	1. query value from `?character=<id>` when it matches a known registry id
-	2. chooser rendering when query is missing or invalid
-- The resolved id is written to `window.ACTIVE_CHARACTER_ID` and then used by src/app/current-character.js.
-- Current behavior for normal file opening:
-	- opening index.html without query shows the chooser.
-- Invalid or unknown query ids show the chooser.
+- Query key comes from window.CHARACTER_BOOT_CONFIG.queryParam (currently character).
+- Valid ?character=<id> boots that character.
+- Missing/invalid query renders chooser.
+- Chooser behavior and links are unchanged.
 
-## Current Character Set
+## Runtime Engine Architecture
 
-- Default character (unchanged): `sable-vey`
-- Additional scaffold character: `placeholder-adept`
-- The scaffold is intentionally placeholder-first and currently reuses Sable-derived data structures to validate boot/runtime wiring without introducing partial schema risk.
+### Store / State Owner
 
-## Contract Change: Old vs New
+- src/app/store.js owns state lifecycle via createRuntimeStore(...):
+  - getState
+  - setState
+  - updateState
+  - subscribe
+- src/app/state.js bootstraps the store from loadState() and exposes:
+  - getState
+  - replaceState
+  - updateState
+  - subscribeState
+- State persistence is now store-driven (snapshot persist on set/update).
 
-- Old contract (removed):
-	- each character exposed three separate globals:
-	- `..._DATA`
-	- `..._DEFAULT_STATE`
-	- `..._SPELL_META`
-	- registry mapped three global names (`dataGlobal`, `defaultStateGlobal`, `spellMetaGlobal`)
-- New contract (active):
-	- each character exposes one bundle object in `window.CHARACTER_BUNDLES[<id>]`
-	- bundle contains at minimum:
-	- `data`
-	- `defaultState`
-	- `spellMeta`
-	- `storageKeySeed`
-	- `storageKey`
-	- registry references the bundle by character id (`bundleId`, defaulting to `id`)
+### Persistence
 
-## Normalized Runtime / Resource Model
+- src/app/persistence.js now provides:
+  - loadState(): read localStorage and normalize against character defaults.
+  - saveStateSnapshot(runtimeState): persist a provided snapshot and update lastSavedAt.
+- Persist writes are triggered by store mutations, not ad hoc helpers in render/events.
 
-- Runtime attunement state is now normalized from character attunement ids (`item.id` when present, otherwise `item.key`).
-- Runtime item-use state is now normalized from character spell ids in:
-	- `data.cantrips` entries with `id`
-	- `data.specialSpells['Item-granted spells']` entries with `id`
-- Runtime item recovery state now uses item-id keyed state:
-	- `state.itemResources.<itemId>.recoveryAvailable`
-	- Current Sable mapping: `state.itemResources.viol.recoveryAvailable`
-- Legacy saved state compatibility is preserved:
-	- old `resources.<itemId>Recover` fields are migrated into `itemResources` at load time.
+### Selectors / Access Layer
 
-## Character-Driven Parts Now In Place
+- src/app/selectors.js provides stable reads:
+  - active tab, filters, expanded spells
+  - resource lookups by alias/id
+  - spell-slot counts/availability
+  - item-use availability
+  - item-recovery availability
+  - attunement state
+  - focus-held state
+  - saved timestamp
+- selectors.js also provides stable path builders for event payloads:
+  - spellSlotPath
+  - attunementPath
+  - itemRecoveryPath
+  - consumablePath
+  - notePath
 
-- `src/data/characters/index.js` now supplies per-character metadata:
-	- `id`
-	- `label`
-	- `bundleId`
-	- `storageKeySeed`
-	- `storageKey`
-	- character-specific `scriptPaths`
-	- `runtimeModel` metadata per character:
-	- `focusItemId`
-	- `itemRecoveryIds`
-	- `resourceIds`
-	- `spellCastRules`
-	- `shortRestResourceIds`
-	- `longRestResourceIds`
-- `src/app/current-character.js` derives these id sets for the boot-selected character and exposes normalized defaults (`CHARACTER_DEFAULT_STATE`).
-- `src/app/resource-model.js` resolves character-driven resource aliases and cast rule lookups into reusable spend/reset helpers.
-- `src/app/actions.js` owns cast intent resolution and runtime action application.
-- `src/app/persistence.js` loads into normalized character-shaped state via `normalizeState(...)`.
-- `src/app/reset.js` applies short/long rest resets by resource id lists instead of hardcoded Sable field names.
+### Resource Model Layer
+
+- src/app/resource-model.js centralizes character-driven runtime resource logic:
+  - alias -> concrete resource id mapping (from runtimeModel.resourceIds)
+  - read/toggle/set resource helpers
+  - spell slot/item-use/free-cast spend helpers
+  - reset helpers for long/short rest support
+- Helpers support both current-state reads and draft-state mutation inside store updates.
+
+### Action / Mutation Layer
+
+- src/app/actions.js is now the main mutation gateway.
+- Owns:
+  - tab switching
+  - spell filters
+  - spell expand/collapse
+  - cast button spend resolution
+  - steppers/toggles/checkbox/number edits
+  - textarea updates
+  - short rest / long rest / reset all dispatch
+- Business logic runs through updateState(...) store mutations.
+
+### Events Layer
+
+- src/app/events.js now primarily:
+  - parses DOM event intent and payload
+  - dispatches to action/change/input handlers
+  - triggers render only when action results request it
+- No core cast/resource business logic remains inline.
+
+### Render / View Layer
+
+- src/app/render.js and src/app/view-helpers.js now read via selectors/access helpers.
+- Render no longer directly assumes concrete keys for most character-shaped runtime fields.
+- Runtime path strings in render are now routed through stable path helpers/aliases where practical.
+
+## What Render No Longer Knows Directly
+
+Render/view now asks access helpers for:
+
+- resource alias paths/values (instead of hardcoding resources.<name> in most places)
+- spell-slot values/paths
+- attunement booleans/paths
+- item-recovery booleans/paths
+- item-use availability
+- focus-held boolean
+- active tab/filter state
+
+## Character-Driven Runtime Metadata
+
+src/data/characters/index.js runtimeModel now drives:
+
+- focus item id
+- item recovery ids
+- resourceIds alias map
+- spellCastRules for special cast resolution
+- shortRestResourceIds and longRestResourceIds
 
 ## Remaining Character-Specific Areas
 
-- The textual labels and descriptive copy in renderers are still authored for Sable.
-- Resource ids in current data/default-state files still use Sable-shaped field names (`holdingViol`, `shieldFree`, `spiritGuardiansFree`, `spiritGuardiansCover`), but runtime reads/writes now go through character-driven alias and cast-rule metadata.
-- The Sable runtime model values in `src/data/characters/index.js` are still explicitly configured for this one character.
-
-## Final Per-Character File Layout
-
-- `src/data/characters/sable-vey/character-data.js`
-- `src/data/characters/sable-vey/default-state.js`
-- `src/data/characters/sable-vey/spell-meta.js`
-- `src/data/characters/placeholder-adept/character-data.js`
-- `src/data/characters/placeholder-adept/default-state.js`
-- `src/data/characters/placeholder-adept/spell-meta.js`
-
-Each character folder now contains only that character's globals and data payloads.
-
-## Minimum Required Character Files / Globals
-
-For each new character id `<id>`, provide three character files and matching globals:
-
-- `src/data/characters/<id>/character-data.js`
-	- must populate `window.CHARACTER_BUNDLES['<id>'].data`
-- `src/data/characters/<id>/default-state.js`
-	- must populate `window.CHARACTER_BUNDLES['<id>'].defaultState`
-- `src/data/characters/<id>/spell-meta.js`
-	- must populate `window.CHARACTER_BUNDLES['<id>'].spellMeta`
-	- these files should also preserve bundle metadata (`id`, `storageKeySeed`, `storageKey`) via bundle initialization
-
-The registry entry in `src/data/characters/index.js` must include:
-
-- `id`, `label`, `storageKeySeed`, `storageKey`
-- `bundleId` (or use `id` as default bundle key)
-- `scriptPaths` (the three file paths above)
-- `runtimeModel` id lists used by reset/derived logic
-
-## Registry Responsibilities
-
-- Owns authoritative character ids and labels.
-- Owns per-character storage key seed/key values.
-- Owns bundle id lookup (`bundleId`) for each character.
-- Owns per-character script path list used at boot (`scriptPaths`).
-- Owns default character id (`window.DEFAULT_CHARACTER_ID`) and query-param boot config.
-
-## Boot-Loader Responsibilities
-
-- Resolves a safe boot character id from the registry resolver.
-- Renders chooser when no valid query id is provided.
-- Loads character-specific scripts first, in deterministic order.
-- Loads shared app scripts after character scripts, preserving plain-script global runtime behavior.
-- Does not fetch network resources and remains file:// compatible.
-
-## Remaining Generalization Targets
-
-- Bundle metadata is currently authored redundantly in registry and bundle-init lines; keeping both is intentional for compatibility and explicitness.
-- Runtime model ids/rules are still manually authored per character in registry.
-- Some UI copy remains Sable-specific text even though data/reset/persistence resolution is bundle-driven.
+- The app now boots two materially different bundles: Sable Vey and Morrow Vale.
+- The runtime architecture tolerates distinct identity text, stats, items, spell lists, attunement defaults, and item-use inventories without app-layer changes.
+- The sheet still assumes a shared schema family across characters: Bard 11, College of Spirits features, the same core runtime resources, and the same rest/reset model.
+- Several UI sections are still class- and subclass-specific rather than fully generic: spirits table, bardic inspiration language, spirit-guardian free-cast handling, and the current feature/spell presentation shape.
+- Manual runtimeModel metadata authoring per character remains required.
 
 ## Query-Based Character Test
 
-- No query check:
-	- open `index.html`
-	- expected: chooser renders.
-- Explicit default id check:
-	- open `index.html?character=sable-vey`
-	- expected: Sable loads.
-- Placeholder scaffold check:
-	- open `index.html?character=placeholder-adept`
-	- expected: placeholder loads successfully.
-- Invalid id check:
-	- open `index.html?character=does-not-exist`
-	- expected: chooser renders.
+- index.html -> chooser renders
+- index.html?character=sable-vey -> Sable boots
+- index.html?character=placeholder-adept -> Morrow Vale boots
+- index.html?character=does-not-exist -> chooser renders
 
-## Shared vs Character-Specific Files
+## Next Logical Refactor Target
 
-- Shared bootstrap/runtime files:
-  - src/data/characters/index.js
-  - src/app/boot-loader.js
-  - src/app/*.js shared app runtime files (utils/current-character/persistence/state/derived/reset/view-helpers/render/events/main)
-- Character-specific files:
-  - character data/default-state/spell-meta scripts listed in each registry entry `scriptPaths`
-
-## Remaining Limitations
-
-- Character scripts must still expose browser globals with the expected names.
-- There is still no runtime UI for changing character; selection is URL/query-driven at boot only.
-
-## Known Next Refactor Targets
-
-- Move remaining render-layer hardcoded runtime resource paths (`resources.*`) behind alias helpers while preserving current UI text and behavior.
-- Reduce render.js line length/readability with behavior-preserving formatting only when approved.
-- Introduce optional smoke-test checklist or script (manual/browser-based) without adding runtime dependencies.
-- Expand spell-cast rule metadata to handle additional special-case spells without touching action resolver internals.
+- Introduce action-type constants and optional action schema validation to harden dispatch contracts while keeping plain-script architecture.

@@ -68,7 +68,7 @@ window.CHARACTERS = {
   },
   'placeholder-adept': {
     id: 'placeholder-adept',
-    label: 'Placeholder Adept (Scaffold)',
+    label: 'Morrow Vale',
     bundleId: 'placeholder-adept',
     storageKeySeed: 'placeholder-adept',
     storageKey: buildStorageKey('placeholder-adept'),
