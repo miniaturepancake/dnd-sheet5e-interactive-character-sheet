@@ -157,6 +157,7 @@ function normalizeState(rawState){
   merged.attunement=normalizeAttunementState(merged.attunement || {});
   merged.itemUses=normalizeItemUseState(merged.itemUses || {});
   merged.itemResources=normalizeItemResourceState(merged.itemResources || {}, merged.resources || {});
+  if(merged.ui) merged.ui.notesPasswordError=false;
   if(merged.resources){
     for(const id of CURRENT_CHARACTER_ITEM_RECOVERY_IDS){
       const legacyKey=`${id}Recover`;

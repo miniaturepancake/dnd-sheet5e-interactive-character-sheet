@@ -38,6 +38,15 @@ window.CHARACTER_BOOT_CONFIG = {
   queryParam: 'character',
 };
 
+// NOTES_CONFIG: password for the Notes tab soft UI gate.
+// CLIENT-SIDE ONLY: This password is visible in the page source.
+// It provides soft access control for a static GitHub Pages site only.
+// It is NOT server-side protection and should not guard sensitive information.
+// Change the password value here to configure it per deployment.
+window.NOTES_CONFIG = {
+  password: 'notes',
+};
+
 window.CHARACTER_ID_ALIASES = {
   'placeholder-adept': 'morrow-vale',
 };

@@ -1,3 +1,3 @@
 function shortRest(){updateState(function(nextState){resetRuntimeResourceIds(CURRENT_CHARACTER_SHORT_REST_RESOURCE_IDS,nextState);});}
 function longRest(){updateState(function(nextState){nextState.hp.current=nextState.hp.max; nextState.hp.temp=0; nextState.hitDiceRemaining=CHARACTER_DEFAULT_STATE.hitDiceRemaining; nextState.deathSaves.successes=[false,false,false]; nextState.deathSaves.failures=[false,false,false]; resetRuntimeResourceIds(CURRENT_CHARACTER_LONG_REST_RESOURCE_IDS,nextState); nextState.spellSlots=clone(DATA.spellSlots); refreshRuntimeItemUses(nextState); resetRuntimeItemRecoveries(nextState);});}
-function resetAll(){replaceState(clone(CHARACTER_DEFAULT_STATE));}
+function resetAll(){const bio=clone(getState().biography||CHARACTER_DEFAULT_STATE.biography||{}); const notesUnlocked=selectNotesUnlocked(); const next=clone(CHARACTER_DEFAULT_STATE); next.biography=bio; if(next.ui) next.ui.notesUnlocked=notesUnlocked; replaceState(next);}

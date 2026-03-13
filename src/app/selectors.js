@@ -83,3 +83,25 @@ function consumablePath(name){
 function notePath(section){
   return `notes.${section}`;
 }
+
+function bioPath(field){
+  return `biography.${field}`;
+}
+
+function selectBioLocked(){
+  return (selectState().biography || {}).locked !== false;
+}
+
+function selectBioField(field){
+  const override=(selectState().biography || {})[field];
+  if(override!==null && override!==undefined && override!=='') return override;
+  return null;
+}
+
+function selectNotesUnlocked(){
+  return !!(selectState().ui || {}).notesUnlocked;
+}
+
+function selectNotesPasswordError(){
+  return !!(selectState().ui || {}).notesPasswordError;
+}

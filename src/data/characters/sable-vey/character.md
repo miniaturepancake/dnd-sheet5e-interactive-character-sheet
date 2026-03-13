@@ -238,7 +238,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - Detect Magic
 - Comprehend Languages
 - Dissonant Whispers
-- Suggestion
+- Shatter
 - See Invisibility
 - Dispel Magic
 - Hypnotic Pattern
@@ -262,7 +262,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - Detect Magic
 - Comprehend Languages
 - Dissonant Whispers
-- Suggestion
+- Shatter
 - See Invisibility
 - Dispel Magic
 - Hypnotic Pattern
@@ -599,7 +599,7 @@ Free cast per Long Rest:
 - Speak with Animals *(Fochlucan Bandore; 1/dawn from item)*
 
 #### 2nd level
-- Suggestion
+- Shatter
 - See Invisibility
 - Invisibility *(Fochlucan Bandore; 1/dawn from item)*
 - Levitate *(Fochlucan Bandore; 1/dawn from item)*
@@ -708,7 +708,7 @@ Free cast per Long Rest:
 
 - Spell blocks below reflect Sable’s **current level-11 loadout**, not every intermediate spell choice from the progression section.
 - Open social scenes with **Guidance**, **Insight**, **Investigation**, and **Persuasion**.
-- Use **Suggestion**, **Comprehend Languages**, **See Invisibility**, and your item-granted utility spells to solve the scenario instead of forcing combat.
+- Use **Comprehend Languages**, **See Invisibility**, and your item-granted utility spells to solve the scenario instead of forcing combat.
 - In combat, use **Spirits from Beyond** as your Bonus Action and keep your Action free for control spells.
 - **Mind Sliver** is an excellent setup cantrip before a save-based spell on the following turn or before an ally’s save-based effect.
 - **Shield** gives you a real defensive reaction that ordinary bards often lack.

@@ -204,3 +204,95 @@ src/data/characters/index.js runtimeModel now drives:
 ## Next Logical Refactor Target
 
 - Introduce action-type constants and optional action schema validation to harden dispatch contracts while keeping plain-script architecture.
+
+## Biography / Profile Override Layer (Overview tab)
+
+### What is it
+Three Overview fields are now user-editable at runtime: **Character profile (summary)**, **Personality**, and **Backstory**. On first use they show the authored bundle value. When edited, the override is stored in the persisted runtime state under `biography` and shown instead of the source text.
+
+### State shape
+```json
+"biography": {
+  "locked": true,
+  "summary": null,
+  "personality": null,
+  "backstory": null
+}
+```
+- `locked: true` = fields are read-only (locked state is the default)
+- Field values are `null` to mean "use source data"; any non-null non-empty string is the persisted override
+- Personality is stored as a newline-delimited string; displayed as a bullet list when locked
+
+### Lock / unlock mechanism
+- A "Unlock to edit" / "Lock editing" toggle button sits at the top of the Overview card row
+- Uses the existing `toggle` action on `biography.locked` — no new action type
+- Lock state persists in localStorage alongside all other runtime state
+- On reload, lock state is restored exactly as saved (defaults to locked for new installs)
+
+### Persistence
+- Biography overrides are stored in the **same per-character localStorage key** as all runtime state (e.g. `sable-vey-sheet-v1`)
+- They are **separate from `notes.runtime` and `notes.combat`** — those remain ephemeral play notes
+- Biography overrides survive **Short Rest, Long Rest, and Reset All**:
+  - Short Rest / Long Rest do not touch `biography` at all
+  - `resetAll()` explicitly preserves the `biography` object before resetting everything else
+
+### Selectors
+- `selectBioLocked()` — returns `true` unless `biography.locked` is explicitly `false`
+- `selectBioField(field)` — returns the stored override value, or `null` if none set
+- `bioPath(field)` — returns `biography.<field>` for use in textarea dispatch payloads
+
+### Not affected by this layer
+- Authored character bundle data (`DATA.identity.*`) is never mutated
+- `normalizeState` passes biography through `deepMerge` without additional normalization
+- `ui.notesPasswordError` is always reset to `false` on page load (in `normalizeState`) so auth errors never persist across sessions
+
+---
+
+## Notes Tab Password Gate
+
+### Security scope — CLIENT-SIDE ONLY
+**This is a soft UI gate for a static GitHub Pages site. The password is stored in plain text in `src/data/characters/index.js` and is visible in the page source to anyone who views source. It is NOT server-side protection and should not be used to protect sensitive personal information.**
+
+### Configuration
+Password is configured in `window.NOTES_CONFIG` at the top of `src/data/characters/index.js`:
+```js
+window.NOTES_CONFIG = {
+  password: 'notes', // change this value to set the password
+};
+```
+Change the `password` value to reconfigure. The comment above it in the file makes the client-side limitation explicit.
+
+### Behavior
+- The Notes tab shows a compact password form when locked
+- Entering the correct password sets `ui.notesUnlocked = true` in persisted state → Notes tab opens
+- Entering the wrong password sets `ui.notesPasswordError = true` → error message shown; `notesPasswordError` is always cleared on page load
+- A **Relock notes** button appears at the top of the unlocked Notes tab → sets `ui.notesUnlocked = false`
+- `resetAll()` preserves `ui.notesUnlocked` (same session, user doesn't lose access after a full reset)
+- Short Rest / Long Rest do not affect `ui.notesUnlocked`
+
+### Unlock persistence
+- `ui.notesUnlocked` is stored in the main per-character localStorage key
+- Unlock **persists across page reload** until the user explicitly clicks "Relock notes" or clears localStorage
+- This is intentional: the gate is a convenience/soft access control, not a session-timeout mechanism
+
+### New actions
+- `notesUnlock` — reads `#notes-password-input` value from DOM, checks against `NOTES_CONFIG.password`, updates state
+- `notesRelock` — sets `ui.notesUnlocked = false`
+- `handleSubmit` added to `events.js`; registered on `document` in `main.js` — enables Enter-to-submit on the password form
+
+---
+
+## Notes Tab Content Changes
+
+- **Quick tactical notes** (including the Draw spirit button and spirit result) moved from Overview to the Notes tab
+- The former "Reference notes from the markdown" card in Notes has been merged into the "Quick tactical notes" card (they showed identical data; the merged card adds the spirit draw UI)
+- Notes tab is now gated; see password gate section above
+
+---
+
+## Overview Tab Biography Editing
+
+- Overview no longer contains the Quick tactical notes card
+- The three biography cards (Character profile, Personality, Backstory) are now conditionally read-only or editable based on `biography.locked`
+- A compact lock/unlock toggle bar spans the top of the Overview biography row
+- Core data, vibe, and combat state cards are not editable (they reflect authored bundle data)

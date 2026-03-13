@@ -11,7 +11,7 @@
   'Detect Magic': {timing:'action', concentration:true, ritual:true, range:'Self (30-ft radius)', duration:'Conc. 10 min.', components:'V, S'},
   'Comprehend Languages': {timing:'action', ritual:true, range:'Self', duration:'1 hr.', components:'V, S, M'},
   'Dissonant Whispers': {timing:'action', range:'60 ft.', duration:'Instant.', components:'V', save:'Wis Save'},
-  'Suggestion': {timing:'action', concentration:true, range:'30 ft.', duration:'Conc. 8 hr.', components:'V, M', save:'Wis Save'},
+  'Shatter': {timing:'action', range:'60 ft. (10-ft radius sphere)', duration:'Instant.', components:'V, S, M', damage:'3d8 Thunder', save:'Con Save'},
   'See Invisibility': {timing:'action', range:'Self', duration:'1 hr.', components:'V, S, M'},
   'Dispel Magic': {timing:'action', range:'120 ft.', duration:'Instant.', components:'V, S'},
   'Hypnotic Pattern': {timing:'action', concentration:true, range:'120 ft. (30-ft cube)', duration:'Conc. 1 min.', components:'S, M', save:'Wis Save'},

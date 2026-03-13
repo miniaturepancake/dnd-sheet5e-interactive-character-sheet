@@ -82,6 +82,8 @@ function dispatchRuntimeAction(action,payload){
   if(action==='shortRest'){shortRest(); return {handled:true, render:true};}
   if(action==='longRest'){longRest(); return {handled:true, render:true};}
   if(action==='resetAll'){resetAll(); return {handled:true, render:true};}
+  if(action==='notesUnlock'){const input=document.getElementById('notes-password-input'); const attempt=input?input.value.trim():''; const expected=(window.NOTES_CONFIG&&window.NOTES_CONFIG.password)||''; if(attempt===expected&&expected!==''){updateState(function(s){s.ui.notesUnlocked=true; s.ui.notesPasswordError=false;});}else{updateState(function(s){s.ui.notesPasswordError=true;});} return {handled:true, render:true};}
+  if(action==='notesRelock'){updateState(function(s){s.ui.notesUnlocked=false; s.ui.notesPasswordError=false;}); return {handled:true, render:true};}
   return {handled:false, render:false};
 }
 

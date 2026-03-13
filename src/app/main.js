@@ -1,1 +1,1 @@
-document.addEventListener('click', handleClick); document.addEventListener('change', handleChange); document.addEventListener('input', handleInput); renderApp();
+document.addEventListener('click', handleClick); document.addEventListener('change', handleChange); document.addEventListener('input', handleInput); document.addEventListener('submit', handleSubmit); renderApp();
