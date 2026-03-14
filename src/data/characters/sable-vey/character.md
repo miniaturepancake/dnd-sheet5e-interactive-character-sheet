@@ -133,7 +133,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 
 **Spell update:**
 
-- Replace **Charm Person** -> **Suggestion**
+- Replace **Charm Person** -> **Shatter**
 - Add **See Invisibility**
 
 **Prepared bard spells (6):**
@@ -142,7 +142,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - Detect Magic
 - Comprehend Languages
 - Dissonant Whispers
-- Suggestion
+- Shatter
 - See Invisibility
 
 ### Level 4 — Bard 4
@@ -231,13 +231,12 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 
 - Add **Counterspell** *(Wizard list)*
 - Replace **Invisibility** -> **Raulothim's Psychic Lance** *(Wizard list)*
-- Replace **Comprehend Languages** -> **Circle of Power** *(Wizard list)*
 
 **Prepared bard spells (15):**
 
 - Healing Word
 - Detect Magic
-- Circle of Power
+- Comprehend Languages
 - Dissonant Whispers
 - Shatter
 - See Invisibility
@@ -255,7 +254,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 
 **Spell update:**
 
-- Replace **Tongues** -> **Otto's Irresistible Dance**
+- Replace **Comprehend Languages** -> **Circle of Power** *(Wizard list)*
 - Add **Dirge**
 
 **Prepared bard spells (16):**
@@ -267,6 +266,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - See Invisibility
 - Dispel Magic
 - Hypnotic Pattern
+- Tongues
 - Counterspell
 - Dimension Door
 - Greater Invisibility
@@ -274,7 +274,6 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - Polymorph
 - Synaptic Static
 - Dirge
-- Otto's Irresistible Dance
 
 **Important subclass note at level 11:**
 
@@ -607,6 +606,7 @@ Free cast per Long Rest:
 #### 3rd level
 - Dispel Magic
 - Hypnotic Pattern
+- Tongues
 - Counterspell *(Magical Secrets)*
 - Fly *(Fochlucan Bandore; 1/dawn from item)*
 
@@ -622,7 +622,6 @@ Free cast per Long Rest:
 
 #### 6th level
 - Dirge
-- Otto's Irresistible Dance
 
 #### Subclass spell
 - Spirit Guardians *(always prepared from subclass; free cast 1/LR; does not count against prepared total)*
@@ -719,7 +718,6 @@ Free cast per Long Rest:
 - **Fochlucan Bandore** adds free casts of **Fly, Invisibility, Levitate, Protection from Evil and Good, Entangle, Faerie Fire, Shillelagh,** and **Speak with Animals**.
 - **Polymorph** is your high-flexibility emergency spell: rescue, lockdown, or brute-force repositioning.
 - **Raulothim's Psychic Lance** is your single-target answer to dangerous casters or isolated bosses.
-- **Otto's Irresistible Dance** is your hard single-target control option when one enemy absolutely needs to be shut down.
 - **Dirge** is your late-slot attrition/control spell when the fight collapses into a wide, ugly scrum around you.
 
 ### Short session-0 summary
