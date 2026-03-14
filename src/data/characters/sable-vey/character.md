@@ -231,12 +231,13 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 
 - Add **Counterspell** *(Wizard list)*
 - Replace **Invisibility** -> **Raulothim's Psychic Lance** *(Wizard list)*
+- Replace **Comprehend Languages** -> **Circle of Power** *(Wizard list)*
 
 **Prepared bard spells (15):**
 
 - Healing Word
 - Detect Magic
-- Comprehend Languages
+- Circle of Power
 - Dissonant Whispers
 - Shatter
 - See Invisibility
@@ -260,7 +261,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 **Prepared bard spells (16):**
 - Healing Word
 - Detect Magic
-- Comprehend Languages
+- Circle of Power
 - Dissonant Whispers
 - Shatter
 - See Invisibility
@@ -591,7 +592,6 @@ Free cast per Long Rest:
 #### 1st level
 - Healing Word
 - Detect Magic *(ritual)*
-- Comprehend Languages *(ritual)*
 - Dissonant Whispers
 - Entangle *(Fochlucan Bandore; 1/dawn from item)*
 - Faerie Fire *(Fochlucan Bandore; 1/dawn from item)*
@@ -618,6 +618,7 @@ Free cast per Long Rest:
 
 #### 5th level
 - Synaptic Static
+- Circle of Power *(Magical Secrets)*
 
 #### 6th level
 - Dirge
@@ -708,7 +709,7 @@ Free cast per Long Rest:
 
 - Spell blocks below reflect Sable’s **current level-11 loadout**, not every intermediate spell choice from the progression section.
 - Open social scenes with **Guidance**, **Insight**, **Investigation**, and **Persuasion**.
-- Use **Comprehend Languages**, **See Invisibility**, and your item-granted utility spells to solve the scenario instead of forcing combat.
+- Use **Circle of Power**, **See Invisibility**, and your item-granted utility spells to solve dangerous magical scenes without forcing combat.
 - In combat, use **Spirits from Beyond** as your Bonus Action and keep your Action free for control spells.
 - **Mind Sliver** is an excellent setup cantrip before a save-based spell on the following turn or before an ally’s save-based effect.
 - **Shield** gives you a real defensive reaction that ordinary bards often lack.
