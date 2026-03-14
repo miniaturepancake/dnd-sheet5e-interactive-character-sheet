@@ -22,7 +22,7 @@
   'Polymorph': {timing:'action', concentration:true, range:'60 ft.', duration:'Conc. 1 hr.', components:'V, S, M', save:'Wis Save'},
   'Synaptic Static': {timing:'action', range:'120 ft. (20-ft sphere)', duration:'Instant.', components:'V, S', damage:'8d6 Psychic', save:'Int Save'},
   'Circle of Power': {timing:'action', concentration:true, range:'Self (30-ft emanation)', duration:'Conc. 10 min.', components:'V'},
-  'Tongues': {timing:'action', range:'Touch', duration:'1 hr.', components:'V, M'},
+  'Slow': {timing:'action', concentration:true, range:'120 ft. (40-ft cube)', duration:'Conc. 1 min.', components:'V, S, M', save:'Wis Save'},
   'Dirge': {timing:'action', concentration:true, range:'Self (60-ft emanation)', duration:'Conc. 1 min.', components:'V', save:'Wis Save'},
   'Spirit Guardians': {timing:'action', concentration:true, range:'Self (15-ft emanation)', duration:'Conc. 10 min.', components:'V, S, M', damage:'3d8 Radiant/Necrotic', save:'Wis Save'},
   'Shield': {timing:'reaction', range:'Self', duration:'1 round', components:'V, S'},

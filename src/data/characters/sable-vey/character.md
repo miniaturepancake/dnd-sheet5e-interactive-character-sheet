@@ -184,7 +184,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 
 **Prepared bard spells (10):**
 
-- Add **Tongues**
+- Add **Slow**
 
 ### Level 7 — Bard 7
 
@@ -242,7 +242,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - See Invisibility
 - Dispel Magic
 - Hypnotic Pattern
-- Tongues
+- Slow
 - Dimension Door
 - Greater Invisibility
 - Synaptic Static
@@ -266,7 +266,7 @@ Think **occult case officer**, not tavern minstrel and not academic librarian. S
 - See Invisibility
 - Dispel Magic
 - Hypnotic Pattern
-- Tongues
+- Slow
 - Counterspell
 - Dimension Door
 - Greater Invisibility
@@ -606,7 +606,7 @@ Free cast per Long Rest:
 #### 3rd level
 - Dispel Magic
 - Hypnotic Pattern
-- Tongues
+- Slow
 - Counterspell *(Magical Secrets)*
 - Fly *(Fochlucan Bandore; 1/dawn from item)*
 
